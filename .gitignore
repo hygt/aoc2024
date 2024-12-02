@@ -1,0 +1,11 @@
+*.iml
+.idea/
+.bsp/
+out/
+.bloop/
+.metals/
+.vscode/
+.scala-build/
+resources/**/*.txt
+.env
+.envrc
