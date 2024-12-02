@@ -21,15 +21,13 @@ class Day02:
         .leftMap(_.getMessage.nn)
 
   def part1(input: Seq[Seq[Int]]): Int =
-    input.count: report =>
-      check(report)
+    input.count(check)
 
   def part2(input: Seq[Seq[Int]]): Int =
     val (good, bad) = input.partition(check)
     val tolerated = bad.count: report =>
       report.indices.exists: n =>
-        val (left, right) = report.splitAt(n)
-        check(left ++ right.tail)
+        check(report.patch(n, Nil, 1))
     good.size + tolerated
 
   private def check(report: Seq[Int]): Boolean =

@@ -24,23 +24,19 @@ class Day01:
         .map(_.getMessage.nn)
 
   def part1(pairs: Seq[(Int, Int)]): Int =
-    pairs
-      .map:
-        case (a, b) => List(a, b)
-      .transpose match
-      case Seq(left, right) =>
-        left.sorted.zip(right.sorted).map((a, b) => (a - b).abs).sum
-      case _ => throw new IllegalArgumentException("Invalid input, expected two columns")
+    pairs.unzip match
+      case (left, right) =>
+        left.sorted
+          .zip(right.sorted)
+          .foldLeft(0):
+            case (acc, (x, y)) =>
+              acc + (x - y).abs
 
   def part2(pairs: Seq[(Int, Int)]): Int =
-    pairs
-      .map:
-        case (a, b) => List(a, b)
-      .transpose match
-      case Seq(left, right) =>
-        val freq = right.groupBy(identity).view.mapValues(_.size)
+    pairs.unzip match
+      case (left, right) =>
+        val freq = right.groupMapReduce(identity)(_ => 1)(_ + _)
         left.map(n => n * freq.getOrElse(n, 0)).sum
-      case _ => throw new IllegalArgumentException("Invalid input, expected two columns")
 
   def run(resourcePath: String): Unit =
     assert(part1(Loader.decode(sample)) == 11)
