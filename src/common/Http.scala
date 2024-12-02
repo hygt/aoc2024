@@ -10,18 +10,20 @@ object Http:
   private def filePath(day: Int): String = f"$day%02d.txt"
 
   private def fullPath(year: Int, day: Int): String = f"resources/$year/day$day%02d.txt"
-  
+
   private def srcPath(year: Int, day: Int): String = f"src/aoc$year/Day$day%02d.scala"
 
   def fetch(year: Int, day: Int): Boolean =
     sys.env.get("AOC_AUTH_TOKEN") match
       case Some(token) =>
-        val request = HttpRequest.newBuilder()
+        val request = HttpRequest
+          .newBuilder()
           .uri(new URI(s"https://adventofcode.com/$year/day/$day/input"))
           .headers("Cookie", s"session=$token")
           .GET()
           .build()
-        val response = HttpClient.newBuilder()
+        val response = HttpClient
+          .newBuilder()
           .build()
           .send(request, HttpResponse.BodyHandlers.ofString())
         val output = Paths.get("resources", year.toString, filePath(day)).toFile
@@ -37,22 +39,21 @@ object Http:
         System.err.println("Get your session token from https://adventofcode.com.")
         System.err.println("In the headers of any request, you will see a `Cookie: session=<token>`.")
         false
-        
+
   private def touch(year: Int, day: Int): Unit =
     val path = Paths.get(srcPath(year, day))
     val file = path.toFile
-    if file.exists then
-      println(s"$path already exists, skipping template creation.")
+    if file.exists then println(s"$path already exists, skipping template creation.")
     else
       file.getParentFile.mkdirs()
       val writer = new FileWriter(file)
       writer.write(template(year, day))
       writer.close()
       println(s"You can now implement your solution in $path")
-      
+
   private def template(year: Int, day: Int): String =
     val packageName = s"aoc$year"
-    val className = f"Day$day%02d"
+    val className   = f"Day$day%02d"
     s"""
       |package $packageName
       |

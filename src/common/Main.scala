@@ -10,9 +10,9 @@ object Main:
     require(1 <= day && day <= 25, "invalid day")
 
   @main def run(args: String*): Unit =
-    val cmd = args.applyOrElse(0, "help")
+    val cmd  = args.applyOrElse(0, "help")
     val year = args.applyOrElse(1, _ => "2024").toIntOption
-    val day = args.applyOrElse(2, _ => "1").toIntOption
+    val day  = args.applyOrElse(2, _ => "1").toIntOption
     (cmd, year, day) match
       case ("fetch", Some(year), Some(day)) =>
         check(year, day)
@@ -22,7 +22,7 @@ object Main:
         val cls = Class.forName(f"aoc$year.Day$day%02d")
         val run = cls.getMethod("run", classOf[String])
         val obj = cls.getDeclaredConstructor().newInstance()
-        val _ = run.invoke(obj, resourcePath(year, day))
+        val _   = run.invoke(obj, resourcePath(year, day))
       case _ =>
         println("Usage: scala-cli run . -- (fetch|run) [year] [day]")
         System.exit(1)

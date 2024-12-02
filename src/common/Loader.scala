@@ -17,8 +17,4 @@ object Loader:
 
   def entire[T: Decoder](resourcePath: String): T =
     Using.resource(Source.fromResource(resourcePath)): resource =>
-      resource
-      .mkString
-      .trim
-      .nn
-      .decoded
+      resource.mkString.trim.nn.decoded

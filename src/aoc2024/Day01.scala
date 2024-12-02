@@ -16,23 +16,27 @@ class Day01:
 
   given Decoder[(Int, Int)] with
     def decode(s: String): Either[String, (Int, Int)] =
-      Either.catchNonFatal:
-        val Array(a, b) = s.split("\\s+").map(_.toInt)
-        (a, b)
-      .left.map(_.getMessage.nn)
+      Either
+        .catchNonFatal:
+          val Array(a, b) = s.split("\\s+").map(_.toInt)
+          (a, b)
+        .left
+        .map(_.getMessage.nn)
 
   def part1(pairs: Seq[(Int, Int)]): Int =
-    pairs.map:
-      case (a, b) => List(a, b)
-    .transpose match
+    pairs
+      .map:
+        case (a, b) => List(a, b)
+      .transpose match
       case Seq(left, right) =>
         left.sorted.zip(right.sorted).map((a, b) => (a - b).abs).sum
       case _ => throw new IllegalArgumentException("Invalid input, expected two columns")
 
   def part2(pairs: Seq[(Int, Int)]): Int =
-    pairs.map:
-      case (a, b) => List(a, b)
-    .transpose match
+    pairs
+      .map:
+        case (a, b) => List(a, b)
+      .transpose match
       case Seq(left, right) =>
         val freq = right.groupBy(identity).view.mapValues(_.size)
         left.map(n => n * freq.getOrElse(n, 0)).sum
