@@ -1,7 +1,7 @@
 package aoc2024
 
-import common.*
 import cats.syntax.either.*
+import common.*
 
 class Day02:
 
