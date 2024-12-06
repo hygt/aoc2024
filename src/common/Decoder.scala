@@ -28,8 +28,8 @@ object Decoder:
   given Decoder[Int] with
     def decode(s: String): Either[String, Int] = s.toIntOption.toRight(s"$s is not a integer")
 
-  given Decoder[Vector[Int]] with
-    def decode(s: String): Either[String, Vector[Int]] =
+  given Decoder[Seq[Int]] with
+    def decode(s: String): Either[String, Seq[Int]] =
       s.splitTrim(",")
         .map(_.toIntOption)
         .sequence
@@ -43,7 +43,7 @@ object Decoder:
       * @return
       *   a vector of tokens, trimmed
       */
-    def splitTrim(regex: String): Vector[String] =
+    def splitTrim(regex: String): Seq[String] =
       val tokens = s.split(regex).nn
-      tokens.toVector.collect:
+      tokens.toSeq.collect:
         case s: String if !s.isBlank => s.trim.nn

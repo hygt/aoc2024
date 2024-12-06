@@ -40,6 +40,31 @@ object Http:
         System.err.println("In the headers of any request, you will see a `Cookie: session=<token>`.")
         false
 
+  def send(year: Int, day: Int, part: Int, answer: String): Boolean =
+    sys.env.get("AOC_AUTH_TOKEN") match
+      case Some(token) =>
+        val request = HttpRequest
+          .newBuilder()
+          .uri(new URI(s"https://adventofcode.com/$year/day/$day/answer"))
+          .headers("Cookie", s"session=$token")
+          .header("Content-Type", "application/x-www-form-urlencoded")
+          .POST(HttpRequest.BodyPublishers.ofString(s"level=$part&answer=$answer"))
+          .build()
+        val response = HttpClient
+          .newBuilder()
+          .build()
+          .send(request, HttpResponse.BodyHandlers.ofString())
+        val body = response.body()
+        // grep the summary of the response
+        val summary = body.split('\n').find(_.startsWith("<article>")).getOrElse("not found")
+        println(summary)
+        true
+      case None =>
+        System.err.print("Please set the AOC_AUTH_TOKEN environment variable. ")
+        System.err.println("Get your session token from https://adventofcode.com.")
+        System.err.println("In the headers of any request, you will see a `Cookie: session=<token>`.")
+        false
+
   private def touch(year: Int, day: Int): Unit =
     val path = Paths.get(srcPath(year, day))
     val file = path.toFile
@@ -70,7 +95,7 @@ object Http:
       |  def run(resourcePath: String): Unit =
       |    assert(part1(Loader.decode(sample)) == 11)
       |    println("$className part 1: " + part1(Loader.load(resourcePath)))
-      |    assert(part2(Loader.decode(sample)) == 31)
-      |    println("$className part 2: " + part2(Loader.load(resourcePath)))
+      |    // assert(part2(Loader.decode(sample)) == 31)
+      |    // println("$className part 2: " + part2(Loader.load(resourcePath)))
       |
       |""".stripMargin

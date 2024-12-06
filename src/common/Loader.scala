@@ -9,6 +9,13 @@ object Loader:
     Using.resource(Source.fromResource(resourcePath)): resource =>
       decode[T](resource.getLines)
 
+  def split[T: Decoder, U: Decoder](resourcePath: String): (Seq[T], Seq[U]) =
+    Using.resource(Source.fromResource(resourcePath)): resource =>
+      val it    = resource.getLines
+      val left  = decode[T](it.takeWhile(_.nonEmpty))
+      val right = decode[U](it.takeWhile(_.nonEmpty))
+      (left, right)
+
   def decode[T: Decoder](sample: String): Seq[T] =
     decode[T](sample.linesIterator)
 
